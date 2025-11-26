@@ -1,30 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Table, Card } from 'react-bootstrap';
 
-const Teams = () => {
-  const [teams, setTeams] = useState([]);
-  const apiUrl = `https://${process.env.REACT_APP_CODESPACE_NAME}-8000.app.github.dev/api/teams/`;
-
-  useEffect(() => {
-    fetch(apiUrl)
-      .then(res => res.json())
-      .then(data => {
-        const results = data.results || data;
-        setTeams(results);
-        console.log('Fetched teams:', results);
-        console.log('API endpoint:', apiUrl);
-      });
-  }, [apiUrl]);
-
-  return (
-    <div>
-      <h2>Teams</h2>
-      <ul>
-        {teams.map((team, idx) => (
-          <li key={team.id || idx}>{team.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+const Teams = ({ teams }) => (
+  <Card className="mb-4">
+    <Card.Header as="h5">Teams</Card.Header>
+    <Card.Body>
+      <Table striped bordered hover responsive>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Members</th>
+          </tr>
+        </thead>
+        <tbody>
+          {teams && teams.length > 0 ? (
+            teams.map((team, idx) => (
+              <tr key={team.id || idx}>
+                <td>{idx + 1}</td>
+                <td>{team.name}</td>
+                <td>{team.members ? team.members.join(', ') : ''}</td>
+              </tr>
+            ))
+          ) : (
+            <tr><td colSpan="3" className="text-center">No teams found.</td></tr>
+          )}
+        </tbody>
+      </Table>
+    </Card.Body>
+  </Card>
+);
 
 export default Teams;
